@@ -23,6 +23,7 @@ def generate_launch_description():
           DeclareLaunchArgument('key',                   default_value='None'),
           DeclareLaunchArgument('ca_cert',               default_value='None'),
           DeclareLaunchArgument('rtcm_message_package',  default_value='rtcm_msgs'),
+          DeclareLaunchArgument('send_nmea',             default_value='True'),
 
           # Pass an environment variable to the node
           SetEnvironmentVariable(name='NTRIP_CLIENT_DEBUG', value=LaunchConfiguration('debug')),
@@ -61,6 +62,9 @@ def generate_launch_description():
 
                     # If the NTRIP caster uses self signed certs, or you need to use a different CA chain, specify the path to the file here
                     'ca_cert': LaunchConfiguration('ca_cert'),
+
+                    # Send NMEA messages to the NTRIP caster
+                    'send_nmea': LaunchConfiguration('send_nmea'),
 
                     # Not sure if this will be looked at by other ndoes, but this frame ID will be added to the RTCM messages published by this node
                     'rtcm_frame_id': 'odom',

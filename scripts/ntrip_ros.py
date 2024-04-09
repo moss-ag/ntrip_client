@@ -49,6 +49,7 @@ class NTRIPRos(Node):
         ('cert', 'None'),
         ('key', 'None'),
         ('ca_cert', 'None'),
+        ('send_nmea', True),
         ('rtcm_frame_id', 'odom'),
         ('nmea_max_length', NMEA_DEFAULT_MAX_LENGTH),
         ('nmea_min_length', NMEA_DEFAULT_MIN_LENGTH),
@@ -152,7 +153,8 @@ class NTRIPRos(Node):
       self.get_logger().error('Unable to connect to NTRIP server')
       return False
     # Setup our subscriber
-    self._nmea_sub = self.create_subscription(Sentence, 'nmea', self.subscribe_nmea, 10)
+    if self.get_parameter('send_nmea').value:
+      self._nmea_sub = self.create_subscription(Sentence, 'nmea', self.subscribe_nmea, 10)
 
     # Start the timer that will check for RTCM data
     self._rtcm_timer = self.create_timer(0.1, self.publish_rtcm)
