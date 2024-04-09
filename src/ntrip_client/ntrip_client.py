@@ -187,19 +187,23 @@ class NTRIPClient:
 
   def reconnect(self):
     while not self._shutdown:
-      self._reconnect_attempt_count += 1
-      self.disconnect()
-      connect_success = self.connect()
-      if not connect_success and self._reconnect_attempt_count < self.reconnect_attempt_max:
-        self._logerr('Reconnect to http://{}:{} failed. Retrying in {} seconds'.format(self._host, self._port, self.reconnect_attempt_wait_seconds))
+      if self.check_internet_connection():
+        self._reconnect_attempt_count += 1
+        self.disconnect()
+        connect_success = self.connect()
+        if not connect_success and self._reconnect_attempt_count < self.reconnect_attempt_max:
+          self._logerr('Reconnect to http://{}:{} failed. Retrying in {} seconds'.format(self._host, self._port, self.reconnect_attempt_wait_seconds))
+          time.sleep(self.reconnect_attempt_wait_seconds)
+        elif self._reconnect_attempt_count >= self.reconnect_attempt_max:
+          reconnect_attempt_count = self._reconnect_attempt_count = 0
+          raise Exception("Reconnect was attempted {} times, but never succeeded".format(reconnect_attempt_count))
+          break
+        elif connect_success:
+          self._reconnect_attempt_count = 0
+          break
+      else:
+        self._logerr('Internet connection is unavailable. Retrying in {} seconds'.format(self.reconnect_attempt_wait_seconds))
         time.sleep(self.reconnect_attempt_wait_seconds)
-      elif self._reconnect_attempt_count >= self.reconnect_attempt_max:
-        reconnect_attempt_count = self._reconnect_attempt_count = 0
-        raise Exception("Reconnect was attempted {} times, but never succeeded".format(reconnect_attempt_count))
-        break
-      elif connect_success:
-        self._reconnect_attempt_count = 0
-        break
     return True
 
   def send_nmea(self, sentence):
@@ -288,6 +292,14 @@ class NTRIPClient:
     # Set some state, and then disconnect
     self._shutdown = True
     self.disconnect()
+
+  def check_internet_connection(self):
+    try:
+        socket.create_connection(("8.8.8.8", 53))
+        return True
+    except OSError:
+        pass
+    return False
 
   def _form_request(self):
     if self._ntrip_version != None and self._ntrip_version != '':
