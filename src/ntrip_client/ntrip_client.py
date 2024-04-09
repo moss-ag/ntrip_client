@@ -186,23 +186,21 @@ class NTRIPClient:
       self._logdebug('Exception: {}'.format(e))
 
   def reconnect(self):
-    if self._connected:
-      while not self._shutdown:
-        self._reconnect_attempt_count += 1
-        self.disconnect()
-        connect_success = self.connect()
-        if not connect_success and self._reconnect_attempt_count < self.reconnect_attempt_max:
-          self._logerr('Reconnect to http://{}:{} failed. Retrying in {} seconds'.format(self._host, self._port, self.reconnect_attempt_wait_seconds))
-          time.sleep(self.reconnect_attempt_wait_seconds)
-        elif self._reconnect_attempt_count >= self.reconnect_attempt_max:
-          self._reconnect_attempt_count = 0
-          raise Exception("Reconnect was attempted {} times, but never succeeded".format(self._reconnect_attempt_count))
-          break
-        elif connect_success:
-          self._reconnect_attempt_count = 0
-          break
-    else:
-      self._logdebug('Reconnect called while still connected, ignoring')
+    while not self._shutdown:
+      self._reconnect_attempt_count += 1
+      self.disconnect()
+      connect_success = self.connect()
+      if not connect_success and self._reconnect_attempt_count < self.reconnect_attempt_max:
+        self._logerr('Reconnect to http://{}:{} failed. Retrying in {} seconds'.format(self._host, self._port, self.reconnect_attempt_wait_seconds))
+        time.sleep(self.reconnect_attempt_wait_seconds)
+      elif self._reconnect_attempt_count >= self.reconnect_attempt_max:
+        reconnect_attempt_count = self._reconnect_attempt_count = 0
+        raise Exception("Reconnect was attempted {} times, but never succeeded".format(reconnect_attempt_count))
+        break
+      elif connect_success:
+        self._reconnect_attempt_count = 0
+        break
+    return True
 
   def send_nmea(self, sentence):
     if not self._connected:

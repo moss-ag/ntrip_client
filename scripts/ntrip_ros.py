@@ -146,7 +146,7 @@ class NTRIPRos(Node):
 
   def run(self):
     # Connect the client
-    if not self._client.connect():
+    if not self._client.reconnect():
       self.get_logger().error('Unable to connect to NTRIP server')
       return False
     # Setup our subscriber
