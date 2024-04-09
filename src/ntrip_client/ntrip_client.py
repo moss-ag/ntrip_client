@@ -28,6 +28,7 @@ class NTRIPClient:
   # Public constants
   DEFAULT_RECONNECT_ATTEMPT_MAX = 10
   DEFAULT_RECONNECT_ATEMPT_WAIT_SECONDS = 5
+  DEFAULT_RECONNECT_ATTEMPT_INTERNET_WAIT_SECONDS = 5
   DEFAULT_RTCM_TIMEOUT_SECONDS = 4
 
   def __init__(self, host, port, mountpoint, ntrip_version, username, password, logerr=logging.error, logwarn=logging.warning, loginfo=logging.info, logdebug=logging.debug):
@@ -88,6 +89,7 @@ class NTRIPClient:
     # Public reconnect info
     self.reconnect_attempt_max = self.DEFAULT_RECONNECT_ATTEMPT_MAX
     self.reconnect_attempt_wait_seconds = self.DEFAULT_RECONNECT_ATEMPT_WAIT_SECONDS
+    self.reconnect_attempt_internet_wait_seconds = self.DEFAULT_RECONNECT_ATTEMPT_INTERNET_WAIT_SECONDS
     self.rtcm_timeout_seconds = self.DEFAULT_RTCM_TIMEOUT_SECONDS
 
   def connect(self):
@@ -202,8 +204,8 @@ class NTRIPClient:
           self._reconnect_attempt_count = 0
           break
       else:
-        self._logerr('Internet connection is unavailable. Retrying in {} seconds'.format(self.reconnect_attempt_wait_seconds))
-        time.sleep(self.reconnect_attempt_wait_seconds)
+        self._logerr('Internet connection is unavailable. Retrying in {} seconds'.format(self.reconnect_attempt_internet_wait_seconds))
+        time.sleep(self.reconnect_attempt_internet_wait_seconds)
     return True
 
   def send_nmea(self, sentence):
