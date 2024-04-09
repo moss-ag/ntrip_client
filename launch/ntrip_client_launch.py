@@ -74,10 +74,11 @@ def generate_launch_description():
 
                     # Will affect how many times the node will attempt to reconnect before exiting, and how long it will wait in between attempts when a reconnect occurs
                     'reconnect_attempt_max': 10,
-                    'reconnect_attempt_wait_seconds': 5,
+                    'reconnect_attempt_wait_seconds': 20,
+                    'reconnect_attempt_internet_wait_seconds': 10,
 
                     # How many seconds is acceptable in between receiving RTCM. If RTCM is not received for this duration, the node will attempt to reconnect
-                    'rtcm_timeout_seconds': 4
+                    'rtcm_timeout_seconds': 20,
                   }
                 ],
                 # Uncomment the following section and replace "/gx5/nmea/sentence" with the topic you are sending NMEA on if it is not the one we requested
