@@ -11,13 +11,13 @@ def generate_launch_description():
           DeclareLaunchArgument('namespace',             default_value='/'),
           DeclareLaunchArgument('node_name',             default_value='ntrip_client'),
           DeclareLaunchArgument('debug',                 default_value='false'),
-          DeclareLaunchArgument('host',                  default_value='20.185.11.35'),
-          DeclareLaunchArgument('port',                  default_value='2101'),
-          DeclareLaunchArgument('mountpoint',            default_value='VTRI_RTCM3'),
+          DeclareLaunchArgument('host',                  default_value='167.131.109.57'),
+          DeclareLaunchArgument('port',                  default_value='9881'),
+          DeclareLaunchArgument('mountpoint',            default_value='MAX_RTCM3'),
           DeclareLaunchArgument('ntrip_version',         default_value='None'),
           DeclareLaunchArgument('authenticate',          default_value='True'),
-          DeclareLaunchArgument('username',              default_value='user'),
-          DeclareLaunchArgument('password',              default_value='pass'),
+          DeclareLaunchArgument('username',              default_value='moss1'),
+          DeclareLaunchArgument('password',              default_value='moss1'),
           DeclareLaunchArgument('ssl',                   default_value='False'),
           DeclareLaunchArgument('cert',                  default_value='None'),
           DeclareLaunchArgument('key',                   default_value='None'),
@@ -35,7 +35,7 @@ def generate_launch_description():
                 name=LaunchConfiguration('node_name'),
                 namespace=LaunchConfiguration('namespace'),
                 package='ntrip_client',
-                executable='ntrip_ros.py',
+                executable='ntrip_ros',
                 parameters=[
                   {
                     # Required parameters used to connect to the NTRIP server
